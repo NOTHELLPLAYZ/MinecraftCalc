@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minecraft Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #2b1055, #7597de);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      max-width: 90%;
+      width: 400px;
+    }
+
+    .logo-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    img.logo {
+      width: 220px;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+
+    img.logo:hover {
+      transform: scale(1.08);
+      filter: hue-rotate(45deg);
+    }
+
+    h1 {
+      font-size: 2em;
+      font-weight: bold;
+      background: linear-gradient(270deg, #ff6ec4, #7873f5, #ff6ec4);
+      background-size: 600% 600%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: animateGradient 6s ease infinite;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .subheading {
+      font-size: 0.95em;
+      font-style: italic;
+      font-weight: bold;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+
+    @keyframes animateGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background-color: rgba(255,255,255,0.1);
+      color: #ffffff;
+      transition: all 0.3s ease-in-out;
+    }
+
+    input:hover,
+    input:focus {
+      background-color: rgba(255,255,255,0.15);
+      box-shadow: 0 0 12px #ff6ec4, 0 0 20px #7873f5;
+    }
+
+    .stack-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .stack-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .stack-btn.selected {
+      background: linear-gradient(to right, #ff6ec4, #7873f5);
+      box-shadow: 0 0 10px #ff6ec4;
+      font-weight: bold;
+    }
+
+    button.calculate, button.reset {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(to right, #ff6ec4, #7873f5);
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    button.calculate:hover,
+    button.reset:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff6ec4;
+    }
+
+    #result-area {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .result-entry {
+      margin-top: 10px;
+      font-size: 1.05em;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.07);
+      padding: 10px 15px;
+      border-radius: 10px;
+    }
+
+    .copy-btn, .copy-all-btn {
+      font-size: 12px;
+      padding: 4px 10px;
+      background: #ffffff22;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .copy-btn:hover, .copy-all-btn:hover {
+      background: #ffffff44;
+    }
+
+    .copy-all-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .watermark {
+      margin-top: 25px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #ccc;
+      font-size: 0.9em;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-wrapper">
+      <img src="https://raw.githubusercontent.com/Notlycoding045/Minecraft-logo-and-photos-/refs/heads/main/logo.png" alt="Minecraft Logo" class="logo" />
+    </div>
+
+    <h1>Minecraft Calculator</h1>
+    <div class="subheading">Welcome Minecraft Builders!</div>
+
+    <label for="blockName">Enter Block Name</label>
+    <input type="text" id="blockName" placeholder="Block name...">
+
+    <label for="blockInput">Enter Total Number Of Blocks</label>
+    <input type="number" id="blockInput" placeholder="Total blocks..." min="0" />
+
+    <label>Select Stack Size</label>
+    <div class="stack-buttons">
+      <button class="stack-btn" onclick="selectStackSize(64)">64</button>
+      <button class="stack-btn" onclick="selectStackSize(16)">16</button>
+    </div>
+
+    <button class="calculate" onclick="calculateStacks()">Calculate</button>
+
+    <div class="copy-all-wrapper hidden" id="copyAllWrapper">
+      <button class="copy-all-btn" onclick="copyAllResults()">📋 Copy All</button>
+    </div>
+
+    <div id="result-area"></div>
+
+    <button class="reset hidden" onclick="resetCalculator()">Reset</button>
+
+    <div class="watermark">MADE BY JASHIN</div>
+  </div>
+
+  <script>
+    let selectedStackSize = null;
+    let resultCount = 0;
+
+    function selectStackSize(size) {
+      selectedStackSize = size;
+      document.querySelectorAll('.stack-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+    }
+
+    function calculateStacks() {
+      const totalBlocks = parseInt(document.getElementById('blockInput').value);
+      const blockName = document.getElementById('blockName').value.trim();
+
+      if (isNaN(totalBlocks) || totalBlocks < 0 || !selectedStackSize) {
+        alert("Please enter valid number and select stack size.");
+        return;
+      }
+
+      const stacks = Math.floor(totalBlocks / selectedStackSize);
+      const leftover = totalBlocks % selectedStackSize;
+
+      const stackLabel = stacks === 1 ? 'stack' : 'stacks';
+      const blockLabel = leftover === 1 ? 'block' : 'blocks';
+      const resultText = `You need ${stacks} ${stackLabel} and ${leftover} ${blockLabel} of ${blockName || 'your block'}`;
+
+      const resultEntry = document.createElement('div');
+      resultEntry.classList.add('result-entry');
+
+      const span = document.createElement('span');
+      span.textContent = `${++resultCount}. ${resultText}`;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.classList.add('copy-btn');
+      copyBtn.textContent = "📋";
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(resultText).then(() => {
+          alert("Copied!");
+        });
+      };
+
+      resultEntry.appendChild(span);
+      resultEntry.appendChild(copyBtn);
+      document.getElementById('result-area').appendChild(resultEntry);
+
+      document.querySelector('.reset').classList.remove('hidden');
+      document.getElementById('copyAllWrapper').classList.remove('hidden');
+    }
+
+    function resetCalculator() {
+      document.getElementById('blockInput').value = '';
+      document.getElementById('blockName').value = '';
+      document.getElementById('result-area').innerHTML = '';
+      selectedStackSize = null;
+      resultCount = 0;
+      document.querySelectorAll('.stack-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      document.querySelector('.reset').classList.add('hidden');
+      document.getElementById('copyAllWrapper').classList.add('hidden');
+    }
+
+    function copyAllResults() {
+      const results = document.querySelectorAll('.result-entry span');
+      let allText = '';
+      results.forEach(r => {
+        allText += r.textContent + '\n';
+      });
+      navigator.clipboard.writeText(allText.trim()).then(() => {
+        alert("All results copied!");
+      });
+    }
+  </script>
+</body>
+</html>
